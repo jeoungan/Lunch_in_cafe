@@ -1,0 +1,106 @@
+extends RefCounted
+
+func get_test_methods() -> Array[String]:
+	return [
+		"test_game_state_spawns_order",
+		"test_level_one_routes_missing_action_to_boss",
+		"test_delivered_order_records_settlement",
+		"test_unknown_menu_spawn_is_rejected",
+		"test_delivery_is_idempotent",
+		"test_perform_action_rejects_delivered_order",
+		"test_delivery_cleans_up_assembly",
+		"test_delivery_handles_zero_patience"
+	]
+
+func test_game_state_spawns_order() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	game.spawn_order("iced_americano", ["to_go"])
+	if game.active_orders().size() != 1:
+		return "Game state should spawn one order"
+	return ""
+
+func test_level_one_routes_missing_action_to_boss() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	game.spawn_order("iced_americano", [])
+	var route := game.route_unavailable_actions("order_1")
+	if route != ["pull_espresso"]:
+		return "Level 1 should route pull_espresso to boss, got %s" % [route]
+	return ""
+
+func test_delivered_order_records_settlement() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	game.spawn_order("iced_tea", [])
+	game.perform_action("order_1", "prepare_packaging", "cup", 1.0)
+	game.perform_action("order_1", "add_ice", "ice", 1.0)
+	game.perform_action("order_1", "add_premade_base", "iced_tea_base", 1.0)
+	game.perform_action("order_1", "deliver_order", "lid", 1.0)
+	var result := game.deliver("order_1", [])
+	if result["score"]["total"] <= 0:
+		return "Delivered order should return a positive score"
+	if game.settlement()["delivered_count"] != 1:
+		return "Settlement should record one delivered order"
+	return ""
+
+func test_unknown_menu_spawn_is_rejected() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	var order_id := game.spawn_order("not_real", [])
+	if order_id != "":
+		return "Unknown menu should not spawn an order"
+	if game.active_orders().size() != 0:
+		return "Unknown menu should not create active orders"
+	return ""
+
+func test_delivery_is_idempotent() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	game.spawn_order("iced_tea", [])
+	game.perform_action("order_1", "prepare_packaging", "cup", 1.0)
+	game.perform_action("order_1", "add_ice", "ice", 1.0)
+	game.perform_action("order_1", "add_premade_base", "iced_tea_base", 1.0)
+	game.perform_action("order_1", "deliver_order", "lid", 1.0)
+	var first := game.deliver("order_1", [])
+	var settlement_after_first := game.settlement()
+	var second := game.deliver("order_1", [])
+	if first.is_empty():
+		return "First delivery should succeed"
+	if not second.is_empty():
+		return "Second delivery should be ignored"
+	if game.settlement()["delivered_count"] != settlement_after_first["delivered_count"]:
+		return "Second delivery should not change settlement"
+	return ""
+
+func test_perform_action_rejects_delivered_order() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	game.spawn_order("iced_tea", [])
+	game.perform_action("order_1", "prepare_packaging", "cup", 1.0)
+	game.perform_action("order_1", "add_ice", "ice", 1.0)
+	game.perform_action("order_1", "add_premade_base", "iced_tea_base", 1.0)
+	game.perform_action("order_1", "deliver_order", "lid", 1.0)
+	game.deliver("order_1", [])
+	if game.perform_action("order_1", "add_ice", "ice", 1.0):
+		return "Delivered order should reject further actions"
+	return ""
+
+func test_delivery_cleans_up_assembly() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	game.spawn_order("iced_tea", [])
+	game.perform_action("order_1", "prepare_packaging", "cup", 1.0)
+	game.perform_action("order_1", "add_ice", "ice", 1.0)
+	game.perform_action("order_1", "add_premade_base", "iced_tea_base", 1.0)
+	game.perform_action("order_1", "deliver_order", "lid", 1.0)
+	game.deliver("order_1", [])
+	if game.assemblies.has("order_1"):
+		return "Delivered order assembly should be cleaned up"
+	return ""
+
+func test_delivery_handles_zero_patience() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	game.order_queue.add_order("order_1", "iced_tea", [], 0.0)
+	game.assemblies["order_1"] = load("res://src/core/drink_assembly.gd").new("iced_tea")
+	game.assemblies["order_1"].apply_action("prepare_packaging", "cup", 1.0)
+	game.assemblies["order_1"].apply_action("add_ice", "ice", 1.0)
+	game.assemblies["order_1"].apply_action("add_premade_base", "iced_tea_base", 1.0)
+	game.assemblies["order_1"].apply_action("deliver_order", "lid", 1.0)
+	var result := game.deliver("order_1", [])
+	if result.is_empty() or result["score"]["total"] <= 0:
+		return "Zero-patience order should still score safely"
+	return ""
