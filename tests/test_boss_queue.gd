@@ -24,9 +24,9 @@ func test_assist_reduces_remaining_time() -> String:
 	var queue = load("res://src/core/boss_queue.gd").new()
 	queue.enqueue("order_1", "pull_espresso")
 	queue.tick(0.1)
-	var before := queue.current_task()["remaining"]
+	var before: float = queue.current_task()["remaining"]
 	queue.assist_current_task(0.5)
-	var after := queue.current_task()["remaining"]
+	var after: float = queue.current_task()["remaining"]
 	if not after < before:
 		return "Assist should reduce remaining time"
 	return ""
@@ -35,7 +35,7 @@ func test_completed_tasks_are_collected() -> String:
 	var queue = load("res://src/core/boss_queue.gd").new()
 	queue.enqueue("order_1", "pull_espresso")
 	queue.tick(99.0)
-	var completed := queue.collect_completed()
+	var completed: Array[Dictionary] = queue.collect_completed()
 	if completed.size() != 1:
 		return "One completed boss task expected"
 	if completed[0]["action"] != "pull_espresso":
@@ -58,7 +58,7 @@ func test_duplicate_enqueue_is_ignored() -> String:
 	queue.enqueue("order_1", "pull_espresso")
 	if queue.pending_count() != 0:
 		return "Duplicate completed boss task should be ignored until collected"
-	var completed := queue.collect_completed()
+	var completed: Array[Dictionary] = queue.collect_completed()
 	if completed.size() != 1:
 		return "Only the original completed boss task should be collected"
 	return ""

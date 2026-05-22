@@ -34,19 +34,20 @@ func tick(delta_seconds: float) -> void:
 		_current = _pending.pop_front()
 	if _current.is_empty():
 		return
-	_current["remaining"] = max(0.0, _current["remaining"] - delta_seconds)
-	if _current["remaining"] <= 0.0:
+	_current["remaining"] = max(0.0, float(_current["remaining"]) - delta_seconds)
+	if float(_current["remaining"]) <= 0.0:
 		_completed.append(_current)
 		_current = {}
 
 func assist_current_task(strength: float) -> void:
 	if _current.is_empty():
 		return
-	var reduction := clamp(strength, 0.0, 1.0) * _current["duration"] * 0.25
-	_current["remaining"] = max(0.0, _current["remaining"] - reduction)
+	var duration: float = float(_current["duration"])
+	var reduction: float = clamp(strength, 0.0, 1.0) * duration * 0.25
+	_current["remaining"] = max(0.0, float(_current["remaining"]) - reduction)
 
 func collect_completed() -> Array[Dictionary]:
-	var result := _completed.duplicate(true)
+	var result: Array[Dictionary] = _completed.duplicate(true)
 	_completed.clear()
 	return result
 
@@ -63,5 +64,5 @@ func _has_task(order_id: String, action: String) -> bool:
 
 func _duration_for(action: String) -> float:
 	if DURATIONS.has(action):
-		return DURATIONS[action]
+		return float(DURATIONS[action])
 	return 5.0
