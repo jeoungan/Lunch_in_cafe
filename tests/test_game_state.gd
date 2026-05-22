@@ -9,6 +9,7 @@ func get_test_methods() -> Array[String]:
 		"test_delivery_is_idempotent",
 		"test_perform_action_rejects_delivered_order",
 		"test_delivery_cleans_up_assembly",
+		"test_routing_skips_boss_action_already_applied_to_assembly",
 		"test_delivery_handles_zero_patience"
 	]
 
@@ -90,6 +91,24 @@ func test_delivery_cleans_up_assembly() -> String:
 	game.deliver("order_1", [])
 	if game.assemblies.has("order_1"):
 		return "Delivered order assembly should be cleaned up"
+	return ""
+
+func test_routing_skips_boss_action_already_applied_to_assembly() -> String:
+	var game = load("res://src/core/game_state.gd").new()
+	var order_id: String = game.spawn_order("iced_americano", [])
+	var first_route := game.route_unavailable_actions(order_id)
+	if first_route != ["pull_espresso"]:
+		return "Initial routing should enqueue pull_espresso, got %s" % [first_route]
+	game.tick(5.0)
+	var completed: Array = game.boss_queue.collect_completed()
+	if completed.size() != 1:
+		return "Boss task should complete before applying it, got %d completed tasks" % completed.size()
+	game.assemblies[order_id].apply_action("pull_espresso", "espresso", 1.0)
+	var second_route := game.route_unavailable_actions(order_id)
+	if second_route != []:
+		return "Applied boss action should not be routed again, got %s" % [second_route]
+	if game.boss_queue.pending_count() != 0:
+		return "Applied boss action should not enqueue another pending task"
 	return ""
 
 func test_delivery_handles_zero_patience() -> String:

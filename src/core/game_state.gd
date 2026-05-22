@@ -40,6 +40,13 @@ func route_unavailable_actions(order_id: String) -> Array[String]:
 	if menu.is_empty():
 		return []
 	var missing := progress.missing_actions(menu["required_actions"])
+	if assemblies.has(order_id):
+		var performed_actions: Array = assemblies[order_id].performed_actions()
+		var unperformed_missing: Array[String] = []
+		for action in missing:
+			if not (action in performed_actions):
+				unperformed_missing.append(action)
+		missing = unperformed_missing
 	for action in missing:
 		boss_queue.enqueue(order_id, action)
 	return missing

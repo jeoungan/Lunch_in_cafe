@@ -37,9 +37,22 @@ func _on_spawn_order_pressed() -> void:
 func _on_basic_step_pressed() -> void:
 	if selected_order_id == "":
 		return
-	game.perform_action(selected_order_id, "prepare_packaging", "cup", 1.0)
-	game.perform_action(selected_order_id, "add_ice", "ice", 1.0)
-	game.perform_action(selected_order_id, "pour_water", "water", 1.0)
+	var order := game.order_queue.get_order(selected_order_id)
+	if order.is_empty() or not game.assemblies.has(selected_order_id):
+		return
+	var menu := game.catalog.get_by_id(order["menu_id"])
+	if menu.is_empty():
+		return
+	var performed_actions: Array = game.assemblies[selected_order_id].performed_actions()
+	for action in menu["required_actions"]:
+		if action == "deliver_order":
+			continue
+		if action in performed_actions:
+			continue
+		if not game.progress.can_perform(action):
+			continue
+		if game.perform_action(selected_order_id, action, _layer_for_player_action(action, order["menu_id"]), 1.0):
+			performed_actions.append(action)
 	_refresh()
 
 func _on_boss_help_pressed() -> void:
@@ -122,6 +135,38 @@ func _layer_for_boss_action(action: String) -> String:
 	if action == "pull_espresso":
 		return "espresso"
 	return action
+
+func _layer_for_player_action(action: String, menu_id: String) -> String:
+	if action == "prepare_packaging":
+		return "cup"
+	if action == "add_ice":
+		return "ice"
+	if action == "pour_water":
+		return "water"
+	if action == "add_premade_base":
+		return _premade_base_layer(menu_id)
+	return action
+
+func _premade_base_layer(menu_id: String) -> String:
+	if menu_id == "iced_tea" or menu_id == "hot_black_tea" or menu_id == "milk_tea":
+		return "tea_base"
+	if menu_id == "cold_brew":
+		return "cold_brew_base"
+	if menu_id == "strawberry_latte" or menu_id == "strawberry_smoothie":
+		return "strawberry_base"
+	if menu_id == "blueberry_latte":
+		return "blueberry_base"
+	if menu_id == "lemon_ade":
+		return "lemon_base"
+	if menu_id == "grapefruit_ade":
+		return "grapefruit_base"
+	if menu_id == "blue_lemon_ade":
+		return "blue_lemon_base"
+	if menu_id == "mango_smoothie":
+		return "mango_base"
+	if menu_id == "yogurt_smoothie":
+		return "yogurt_base"
+	return "premade_base"
 
 func _select_first_active_order() -> void:
 	for order in game.active_orders():

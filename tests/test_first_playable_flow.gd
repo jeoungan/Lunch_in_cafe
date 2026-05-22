@@ -4,6 +4,7 @@ func get_test_methods() -> Array[String]:
 	return [
 		"test_level_one_americano_boss_help_flow",
 		"test_main_controller_buttons_complete_first_order",
+		"test_main_controller_basic_step_completes_spawned_iced_tea",
 		"test_shift_can_tick_through_peak_and_settle"
 	]
 
@@ -65,6 +66,39 @@ func test_main_controller_buttons_complete_first_order() -> String:
 		return "Controller button flow should deliver the first order and earn money"
 	if not main.game.assemblies.is_empty():
 		return "Controller delivery should clean up delivered assemblies"
+	main.free()
+	return ""
+
+func test_main_controller_basic_step_completes_spawned_iced_tea() -> String:
+	var main = load("res://scenes/main/Main.tscn").instantiate()
+	main._ready()
+	main._on_spawn_order_pressed()
+	var order_id: String = main.selected_order_id
+	if order_id == "":
+		main.free()
+		return "Spawn button should select the new iced tea order"
+	var order: Dictionary = main.game.order_queue.get_order(order_id)
+	if order.get("menu_id", "") != "iced_tea":
+		main.free()
+		return "Spawn button should create iced tea, got %s" % order.get("menu_id", "")
+	main._on_basic_step_pressed()
+	var performed_actions: Array = main.game.assemblies[order_id].performed_actions()
+	if performed_actions != ["prepare_packaging", "add_ice", "add_premade_base", "pour_water"]:
+		main.free()
+		return "Basic Step should complete iced tea actions before delivery, got %s" % [performed_actions]
+	main._on_basic_step_pressed()
+	var repeated_actions: Array = main.game.assemblies[order_id].performed_actions()
+	if repeated_actions != performed_actions:
+		main.free()
+		return "Basic Step should not duplicate completed iced tea actions, got %s" % [repeated_actions]
+	main._on_deliver_pressed()
+	var settlement: Dictionary = main.game.settlement()
+	if settlement.get("money", 0) <= 0:
+		main.free()
+		return "Delivering the Basic Step iced tea should earn money"
+	if main.game.assemblies.has(order_id):
+		main.free()
+		return "Delivered iced tea assembly should be cleaned up"
 	main.free()
 	return ""
 
