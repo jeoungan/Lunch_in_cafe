@@ -27,6 +27,11 @@
       "description": "clear plastic cup iced americano with visible ice cubes and espresso gradient, cozy 2D cafe game item"
     },
     {
+      "id": "iced_americano_water_only",
+      "output": "drinks/layers/iced_americano_water_only.png",
+      "description": "clear plastic takeaway cup filled only with transparent water, no ice, no espresso, no sleeve, no cup holder, no lid, no straw, transparent background, side view, cozy 2D cafe game layer sprite"
+    },
+    {
       "id": "hot_americano",
       "output": "drinks/hot_americano.png",
       "description": "paper cup hot americano with dark coffee surface and simple sleeve, cozy 2D cafe game item"

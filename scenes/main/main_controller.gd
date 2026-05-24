@@ -3,7 +3,7 @@ extends Control
 const GameState = preload("res://src/core/game_state.gd")
 const StationView = preload("res://scenes/stations/station_view.gd")
 const DrinkAssembly = preload("res://src/core/drink_assembly.gd")
-const GENERATED_ICED_AMERICANO_PATH := "res://assets/generated/drinks/iced_americano.png"
+const GENERATED_DRINK_LAYER_PATH := "res://assets/generated/drinks/layers/iced_americano_water_only.png"
 
 var game := GameState.new()
 var station_view := StationView.new()
@@ -131,13 +131,13 @@ func _refresh_station_scene() -> void:
 
 func _add_generated_drink_preview() -> void:
 	var station := get_node_or_null("StationScenes/PickupCounterStation")
-	if station == null or station.get_node_or_null("GeneratedIcedAmericanoPreview") != null:
+	if station == null or station.get_node_or_null("GeneratedDrinkLayerPreview") != null:
 		return
 	var texture := _load_generated_drink_texture()
 	if texture == null:
 		return
 	var preview := TextureRect.new()
-	preview.name = "GeneratedIcedAmericanoPreview"
+	preview.name = "GeneratedDrinkLayerPreview"
 	preview.texture = texture
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -147,10 +147,10 @@ func _add_generated_drink_preview() -> void:
 	station.add_child(preview)
 
 func _load_generated_drink_texture() -> Texture2D:
-	if ResourceLoader.exists(GENERATED_ICED_AMERICANO_PATH):
-		return load(GENERATED_ICED_AMERICANO_PATH) as Texture2D
+	if ResourceLoader.exists(GENERATED_DRINK_LAYER_PATH):
+		return load(GENERATED_DRINK_LAYER_PATH) as Texture2D
 	var image := Image.new()
-	if image.load(ProjectSettings.globalize_path(GENERATED_ICED_AMERICANO_PATH)) != OK:
+	if image.load(ProjectSettings.globalize_path(GENERATED_DRINK_LAYER_PATH)) != OK:
 		return null
 	return ImageTexture.create_from_image(image)
 
