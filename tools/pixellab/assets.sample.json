@@ -27,6 +27,12 @@
       "description": "clear plastic cup iced americano with visible ice cubes and espresso gradient, cozy 2D cafe game item"
     },
     {
+      "id": "empty_clear_plastic_cup",
+      "output": "drinks/layers/empty_clear_plastic_cup.png",
+      "description": "empty clear plastic cafe cup only, simple transparent cup body with a thin open oval rim, hollow transparent interior, no contents, no liquid, no water, no coffee, no ice, no lid, no dome lid, no cover, no sleeve, no cup holder, no straw, no label, transparent background, side view, cozy 2D cafe game base layer sprite",
+      "negative_description": "liquid, water, coffee, espresso, tea, fill, filled cup, blue drink, white drink, ice, lid, dome lid, cover, cap, thick top band, lid collar, raised lid shape, sleeve, cup holder, straw, label, text, watermark, logo, hands, person, messy background"
+    },
+    {
       "id": "iced_americano_water_only",
       "output": "drinks/layers/iced_americano_water_only.png",
       "description": "open clear plastic cafe cup with visible open rim, mostly empty, only a shallow pool of transparent water at the very bottom, water level around 20 to 25 percent of the cup height to leave room for ice displacement, no ice, no espresso, no lid, no dome lid, no cover, no cap, no sleeve, no cup holder, no straw, transparent background, side view, cozy 2D cafe game layer sprite",

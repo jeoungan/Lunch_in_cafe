@@ -3,7 +3,7 @@ extends Control
 const GameState = preload("res://src/core/game_state.gd")
 const StationView = preload("res://scenes/stations/station_view.gd")
 const DrinkAssembly = preload("res://src/core/drink_assembly.gd")
-const GENERATED_DRINK_LAYER_PATH := "res://assets/generated/drinks/layers/iced_americano_water_only.png"
+const GENERATED_DRINK_LAYER_PATH := "res://assets/generated/drinks/layers/empty_clear_plastic_cup.png"
 
 var game := GameState.new()
 var station_view := StationView.new()
