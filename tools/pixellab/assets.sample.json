@@ -1,0 +1,200 @@
+{
+  "output_dir": "assets/generated",
+  "defaults": {
+    "width": 192,
+    "height": 192,
+    "no_background": true,
+    "view": "side",
+    "outline": true,
+    "shading": "soft",
+    "detail": "medium",
+    "negative_description": "text, watermark, logo, hands, person, messy background"
+  },
+  "assets": [
+    {
+      "id": "iced_tea_poured",
+      "output": "drinks/iced_tea_poured.png",
+      "description": "clear plastic takeaway cup filled with amber iced tea before ice, cozy 2D cafe game item, crisp painterly pixel-inspired sprite"
+    },
+    {
+      "id": "iced_tea_with_ice",
+      "output": "drinks/iced_tea_with_ice.png",
+      "description": "clear plastic takeaway cup of amber iced tea with sparkling ice cubes, sleeve and handle attached, cozy 2D cafe game item"
+    },
+    {
+      "id": "iced_americano",
+      "output": "drinks/iced_americano.png",
+      "description": "clear plastic cup iced americano with visible ice cubes and espresso gradient, cozy 2D cafe game item"
+    },
+    {
+      "id": "hot_americano",
+      "output": "drinks/hot_americano.png",
+      "description": "paper cup hot americano with dark coffee surface and simple sleeve, cozy 2D cafe game item"
+    },
+    {
+      "id": "espresso_shot",
+      "output": "drinks/espresso_shot.png",
+      "description": "tiny glass espresso shot with golden crema, cozy 2D cafe game item"
+    },
+    {
+      "id": "cafe_latte",
+      "output": "drinks/cafe_latte.png",
+      "description": "warm cafe latte in paper cup with soft foam and heart latte art, cozy 2D cafe game item"
+    },
+    {
+      "id": "iced_latte",
+      "output": "drinks/iced_latte.png",
+      "description": "clear plastic cup iced latte with milk and espresso layers, ice cubes, cozy 2D cafe game item"
+    },
+    {
+      "id": "vanilla_latte",
+      "output": "drinks/vanilla_latte.png",
+      "description": "vanilla latte in clear cup with pale cream color, espresso layer, small vanilla bean garnish, cozy 2D cafe game item"
+    },
+    {
+      "id": "caramel_latte",
+      "output": "drinks/caramel_latte.png",
+      "description": "caramel latte with glossy caramel drizzle on foam, warm golden tones, cozy 2D cafe game item"
+    },
+    {
+      "id": "cappuccino",
+      "output": "drinks/cappuccino.png",
+      "description": "cappuccino in ceramic cup with thick foam dome and cocoa dusting, cozy 2D cafe game item"
+    },
+    {
+      "id": "mocha_latte",
+      "output": "drinks/mocha_latte.png",
+      "description": "mocha latte with chocolate syrup stripes and whipped cream swirl, cozy 2D cafe game item"
+    },
+    {
+      "id": "chocolate_latte",
+      "output": "drinks/chocolate_latte.png",
+      "description": "rich chocolate latte in clear cup with chocolate powder top and soft milk layer, cozy 2D cafe game item"
+    },
+    {
+      "id": "green_tea_latte",
+      "output": "drinks/green_tea_latte.png",
+      "description": "hot green tea latte with smooth matcha foam and tiny powder dusting, cozy 2D cafe game item"
+    },
+    {
+      "id": "iced_green_tea_latte",
+      "output": "drinks/iced_green_tea_latte.png",
+      "description": "clear plastic cup iced green tea latte with matcha and milk layers plus ice cubes, cozy 2D cafe game item"
+    },
+    {
+      "id": "strawberry_latte",
+      "output": "drinks/strawberry_latte.png",
+      "description": "clear plastic cup strawberry latte with red fruit syrup layer, milk, and strawberry pieces, cozy 2D cafe game item"
+    },
+    {
+      "id": "milk_tea",
+      "output": "drinks/milk_tea.png",
+      "description": "iced milk tea in clear plastic cup with creamy tea color and black tapioca pearls, cozy 2D cafe game item"
+    },
+    {
+      "id": "chai_latte",
+      "output": "drinks/chai_latte.png",
+      "description": "warm chai latte with cinnamon dusting, creamy foam, and gentle spice color, cozy 2D cafe game item"
+    },
+    {
+      "id": "earl_grey_tea",
+      "output": "drinks/earl_grey_tea.png",
+      "description": "transparent glass cup of earl grey tea with warm amber color and lemon slice, cozy 2D cafe game item"
+    },
+    {
+      "id": "yuzu_tea",
+      "output": "drinks/yuzu_tea.png",
+      "description": "hot yuzu tea in glass mug with golden citrus peel pieces, cozy 2D cafe game item"
+    },
+    {
+      "id": "lemon_ade",
+      "output": "drinks/lemon_ade.png",
+      "description": "sparkling lemon ade in clear cup with ice, lemon slices, bubbles, and bright yellow gradient, cozy 2D cafe game item"
+    },
+    {
+      "id": "grapefruit_ade",
+      "output": "drinks/grapefruit_ade.png",
+      "description": "sparkling grapefruit ade in clear cup with pink citrus slices, ice, and bubbles, cozy 2D cafe game item"
+    },
+    {
+      "id": "honey_citron_ade",
+      "output": "drinks/honey_citron_ade.png",
+      "description": "honey citron ade with golden syrup at bottom, ice, bubbles, and citrus peel, cozy 2D cafe game item"
+    },
+    {
+      "id": "peach_iced_tea",
+      "output": "drinks/peach_iced_tea.png",
+      "description": "peach iced tea in clear cup with peach slices, ice cubes, and amber peach gradient, cozy 2D cafe game item"
+    },
+    {
+      "id": "mango_smoothie",
+      "output": "drinks/mango_smoothie.png",
+      "description": "mango smoothie in clear cup with thick golden texture and mango cube topping, cozy 2D cafe game item"
+    },
+    {
+      "id": "strawberry_smoothie",
+      "output": "drinks/strawberry_smoothie.png",
+      "description": "strawberry smoothie in clear cup with thick pink texture and strawberry garnish, cozy 2D cafe game item"
+    },
+    {
+      "id": "blueberry_smoothie",
+      "output": "drinks/blueberry_smoothie.png",
+      "description": "blueberry smoothie in clear cup with purple fruit texture and blueberry topping, cozy 2D cafe game item"
+    },
+    {
+      "id": "yogurt_smoothie",
+      "output": "drinks/yogurt_smoothie.png",
+      "description": "plain yogurt smoothie in clear cup with creamy white swirl and light blue straw, cozy 2D cafe game item"
+    },
+    {
+      "id": "matcha_frappe",
+      "output": "drinks/matcha_frappe.png",
+      "description": "matcha frappe in clear cup with whipped cream swirl and matcha powder dusting, cozy 2D cafe game item"
+    },
+    {
+      "id": "chocolate_frappe",
+      "output": "drinks/chocolate_frappe.png",
+      "description": "chocolate frappe in clear cup with whipped cream, chocolate drizzle, and cookie crumb topping, cozy 2D cafe game item"
+    },
+    {
+      "id": "affogato",
+      "output": "drinks/affogato.png",
+      "description": "affogato dessert cup with vanilla ice cream scoop and espresso poured over it, cozy 2D cafe game item"
+    },
+    {
+      "id": "sweet_potato_latte",
+      "output": "drinks/sweet_potato_latte.png",
+      "description": "sweet potato latte in warm purple beige cup with creamy foam and small powder dusting, cozy 2D cafe game item"
+    },
+    {
+      "id": "black_sesame_latte",
+      "output": "drinks/black_sesame_latte.png",
+      "description": "black sesame latte with grey cream color, sesame speckles, and smooth foam top, cozy 2D cafe game item"
+    },
+    {
+      "id": "mint_choco_latte",
+      "output": "drinks/mint_choco_latte.png",
+      "description": "mint chocolate latte in clear cup with mint green milk, chocolate chips, and cream topping, cozy 2D cafe game item"
+    },
+    {
+      "id": "dalgona_latte",
+      "output": "drinks/dalgona_latte.png",
+      "description": "dalgona latte with fluffy whipped coffee foam over milk in a clear cup, cozy 2D cafe game item"
+    },
+    {
+      "id": "matcha_powder_measured",
+      "output": "ingredients/matcha_powder_measured.png",
+      "description": "small measured scoop of green matcha powder in a cafe measuring cup, clean 2D game ingredient sprite"
+    },
+    {
+      "id": "matcha_powder_dissolved",
+      "output": "ingredients/matcha_powder_dissolved.png",
+      "description": "small cup of matcha powder dissolved with hot water into glossy green concentrate, clean 2D game ingredient sprite"
+    },
+    {
+      "id": "whipped_cream_swirl",
+      "output": "toppings/whipped_cream_swirl.png",
+      "description": "single pretty whipped cream swirl topping, soft white cream with gentle highlights, clean 2D game topping sprite"
+    }
+  ]
+}
