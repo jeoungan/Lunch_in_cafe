@@ -32,9 +32,9 @@ test('buildPixfluxPayload maps an asset spec to the PixelLab request body', () =
     height: 192,
     no_background: true,
     view: 'side',
-    outline: true,
-    shading: 'soft',
-    detail: 'medium',
+    outline: 'selective outline',
+    shading: 'medium shading',
+    detail: 'medium detail',
   });
 
   assert.deepEqual(payload, {
@@ -45,9 +45,9 @@ test('buildPixfluxPayload maps an asset spec to the PixelLab request body', () =
     },
     no_background: true,
     view: 'side',
-    outline: true,
-    shading: 'soft',
-    detail: 'medium',
+    outline: 'selective outline',
+    shading: 'medium shading',
+    detail: 'medium detail',
   });
 });
 
@@ -55,6 +55,22 @@ test('validateAssetSpec rejects sizes outside the PixelLab bounds', () => {
   assert.throws(
     () => validateAssetSpec({ id: 'too_large', description: 'x', width: 512, height: 192 }),
     /width.*32.*400/
+  );
+});
+
+test('validateAssetSpec rejects unsupported PixelLab enum values before calling the API', () => {
+  assert.throws(
+    () =>
+      validateAssetSpec({
+        id: 'bad_style',
+        description: 'x',
+        width: 192,
+        height: 192,
+        outline: true,
+        shading: 'soft',
+        detail: 'medium',
+      }),
+    /outline.*PixelLab value/
   );
 });
 
@@ -75,4 +91,23 @@ test('extractImageReference decodes data URL images from JSON responses', () => 
   assert.equal(extracted.kind, 'bytes');
   assert.equal(extracted.mimeType, 'image/png');
   assert.equal(Buffer.from(extracted.bytes).toString(), 'png-bytes');
+});
+
+test('extractImageReference decodes PixelLab Base64Image response objects', () => {
+  const body = {
+    image: {
+      type: 'base64',
+      base64: `data:image/png;base64,${Buffer.from('pixellab-bytes').toString('base64')}`,
+    },
+    usage: {
+      type: 'credits',
+      credits: 1,
+    },
+  };
+
+  const extracted = extractImageReference(body);
+
+  assert.equal(extracted.kind, 'bytes');
+  assert.equal(extracted.mimeType, 'image/png');
+  assert.equal(Buffer.from(extracted.bytes).toString(), 'pixellab-bytes');
 });

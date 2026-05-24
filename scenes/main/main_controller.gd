@@ -3,6 +3,7 @@ extends Control
 const GameState = preload("res://src/core/game_state.gd")
 const StationView = preload("res://scenes/stations/station_view.gd")
 const DrinkAssembly = preload("res://src/core/drink_assembly.gd")
+const GENERATED_ICED_AMERICANO_PATH := "res://assets/generated/drinks/iced_americano.png"
 
 var game := GameState.new()
 var station_view := StationView.new()
@@ -22,6 +23,7 @@ const STATION_PANEL_NAMES := {
 func _ready() -> void:
 	add_child(station_view)
 	station_view.hide()
+	_add_generated_drink_preview()
 	selected_order_id = game.spawn_order("iced_americano", ["to_go"])
 	_refresh()
 
@@ -126,6 +128,31 @@ func _refresh_station_scene() -> void:
 	var current_panel_name := String(STATION_PANEL_NAMES.get(station_view.current_station_id(), ""))
 	for child in station_scenes.get_children():
 		child.visible = child.name == current_panel_name
+
+func _add_generated_drink_preview() -> void:
+	var station := get_node_or_null("StationScenes/PickupCounterStation")
+	if station == null or station.get_node_or_null("GeneratedIcedAmericanoPreview") != null:
+		return
+	var texture := _load_generated_drink_texture()
+	if texture == null:
+		return
+	var preview := TextureRect.new()
+	preview.name = "GeneratedIcedAmericanoPreview"
+	preview.texture = texture
+	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview.position = Vector2(178.0, 82.0)
+	preview.size = Vector2(140.0, 140.0)
+	station.add_child(preview)
+
+func _load_generated_drink_texture() -> Texture2D:
+	if ResourceLoader.exists(GENERATED_ICED_AMERICANO_PATH):
+		return load(GENERATED_ICED_AMERICANO_PATH) as Texture2D
+	var image := Image.new()
+	if image.load(ProjectSettings.globalize_path(GENERATED_ICED_AMERICANO_PATH)) != OK:
+		return null
+	return ImageTexture.create_from_image(image)
 
 func _collect_completed_boss_tasks() -> void:
 	for task in game.boss_queue.collect_completed():

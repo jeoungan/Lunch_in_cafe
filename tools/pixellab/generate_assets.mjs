@@ -22,6 +22,26 @@ const OPTIONAL_PIXFLUX_FIELDS = [
   'text',
   'obfuscate',
 ];
+const PIXFLUX_ENUMS = {
+  outline: [
+    'single color black outline',
+    'single color outline',
+    'selective outline',
+    'lineless',
+  ],
+  shading: [
+    'flat shading',
+    'basic shading',
+    'medium shading',
+    'detailed shading',
+    'highly detailed shading',
+  ],
+  detail: [
+    'low detail',
+    'medium detail',
+    'highly detailed',
+  ],
+};
 
 export function parseEnvText(text) {
   const values = {};
@@ -68,6 +88,13 @@ export function validateAssetSpec(spec) {
 
   assertSize('width', spec.width, spec.id);
   assertSize('height', spec.height, spec.id);
+  for (const [field, allowedValues] of Object.entries(PIXFLUX_ENUMS)) {
+    if (spec[field] !== undefined && !allowedValues.includes(spec[field])) {
+      throw new Error(
+        `Asset "${spec.id}" ${field} must be a PixelLab value: ${allowedValues.join(', ')}.`
+      );
+    }
+  }
 
   return spec;
 }
@@ -128,6 +155,10 @@ export function extractImageReference(value) {
   }
 
   if (typeof value === 'object') {
+    if (value.type === 'base64' && typeof value.base64 === 'string') {
+      return stringToImageReference(value.base64);
+    }
+
     for (const key of ['image', 'image_url', 'url', 'data', 'output', 'result', 'images']) {
       if (value[key] !== undefined) {
         const found = extractImageReference(value[key]);

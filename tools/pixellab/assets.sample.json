@@ -5,9 +5,9 @@
     "height": 192,
     "no_background": true,
     "view": "side",
-    "outline": true,
-    "shading": "soft",
-    "detail": "medium",
+    "outline": "selective outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
     "negative_description": "text, watermark, logo, hands, person, messy background"
   },
   "assets": [
