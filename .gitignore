@@ -1,2 +1,5 @@
 .worktrees/
 .godot/
+.env
+.env.*
+!.env.example
