@@ -29,7 +29,8 @@
     {
       "id": "iced_americano_water_only",
       "output": "drinks/layers/iced_americano_water_only.png",
-      "description": "clear plastic takeaway cup filled only with transparent water, no ice, no espresso, no sleeve, no cup holder, no lid, no straw, transparent background, side view, cozy 2D cafe game layer sprite"
+      "description": "open clear plastic cafe cup with visible open rim, mostly empty, only a shallow pool of transparent water at the very bottom, water level around 20 to 25 percent of the cup height to leave room for ice displacement, no ice, no espresso, no lid, no dome lid, no cover, no cap, no sleeve, no cup holder, no straw, transparent background, side view, cozy 2D cafe game layer sprite",
+      "negative_description": "high water level, half full, full cup, filled cup, lid, dome lid, cover, cap, ice, espresso, coffee, sleeve, holder, straw, text, watermark, logo, hands, person, messy background"
     },
     {
       "id": "hot_americano",
