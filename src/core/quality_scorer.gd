@@ -6,8 +6,8 @@ func score(input: Dictionary) -> Dictionary:
 	var performed: Array = input.get("performed_actions", [])
 	var requests: Array = input.get("requests", [])
 	var satisfied: Array = input.get("satisfied_requests", [])
-	var wait_ratio: float = clamp(input.get("wait_ratio", 0.0), 0.0, 1.0)
-	var visual_neatness: float = clamp(input.get("visual_neatness", 1.0), 0.0, 1.0)
+	var wait_ratio: float = clamp(float(input.get("wait_ratio", 0.0)), 0.0, 1.0)
+	var visual_neatness: float = clamp(float(input.get("visual_neatness", 1.0)), 0.0, 1.0)
 
 	var recipe_score := _recipe_score(required, performed)
 	var request_score := _request_score(requests, satisfied)
@@ -46,7 +46,7 @@ func _request_score(requests: Array, satisfied: Array) -> float:
 
 func _unique_values(values: Array) -> Array:
 	var seen := {}
-	var unique := []
+	var unique: Array = []
 	for value in values:
 		if not seen.has(value):
 			seen[value] = true

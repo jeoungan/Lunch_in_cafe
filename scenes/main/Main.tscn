@@ -45,6 +45,488 @@ grow_horizontal = 2
 horizontal_alignment = 1
 text = "Phase: normal"
 
+[node name="StationScenes" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 0
+offset_left = 160.0
+offset_top = 150.0
+offset_right = 860.0
+offset_bottom = 560.0
+
+[node name="RegisterStation" type="Control" parent="StationScenes"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackWall" type="ColorRect" parent="StationScenes/RegisterStation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.55, 0.36, 0.25, 1)
+
+[node name="CafeDoor" type="ColorRect" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 44.0
+offset_top = 44.0
+offset_right = 188.0
+offset_bottom = 270.0
+color = Color(0.21, 0.32, 0.36, 1)
+
+[node name="DoorWindow" type="ColorRect" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 72.0
+offset_right = 160.0
+offset_bottom = 168.0
+color = Color(0.67, 0.86, 0.91, 1)
+
+[node name="CounterDesk" type="ColorRect" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 238.0
+offset_right = 656.0
+offset_bottom = 356.0
+color = Color(0.38, 0.2, 0.13, 1)
+
+[node name="ReceiptPrinter" type="ColorRect" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 290.0
+offset_top = 190.0
+offset_right = 370.0
+offset_bottom = 238.0
+color = Color(0.88, 0.86, 0.79, 1)
+
+[node name="SodaStorage" type="ColorRect" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 390.0
+offset_top = 276.0
+offset_right = 496.0
+offset_bottom = 340.0
+color = Color(0.31, 0.5, 0.71, 1)
+
+[node name="BeanBin" type="ColorRect" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 520.0
+offset_top = 274.0
+offset_right = 620.0
+offset_bottom = 340.0
+color = Color(0.18, 0.11, 0.08, 1)
+
+[node name="Title" type="Label" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 28.0
+offset_right = 650.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 28
+text = "계산대 안쪽"
+
+[node name="Note" type="Label" parent="StationScenes/RegisterStation"]
+layout_mode = 0
+offset_left = 260.0
+offset_top = 74.0
+offset_right = 650.0
+offset_bottom = 104.0
+text = "문과 손님, 영수증 프린터, 사이다와 원두 보관"
+
+[node name="SinkStation" type="Control" parent="StationScenes"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackWall" type="ColorRect" parent="StationScenes/SinkStation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.47, 0.56, 0.54, 1)
+
+[node name="SinkCounter" type="ColorRect" parent="StationScenes/SinkStation"]
+layout_mode = 0
+offset_left = 82.0
+offset_top = 240.0
+offset_right = 456.0
+offset_bottom = 340.0
+color = Color(0.33, 0.28, 0.23, 1)
+
+[node name="SinkBasin" type="ColorRect" parent="StationScenes/SinkStation"]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 220.0
+offset_right = 338.0
+offset_bottom = 290.0
+color = Color(0.72, 0.78, 0.78, 1)
+
+[node name="IceMachine" type="ColorRect" parent="StationScenes/SinkStation"]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 118.0
+offset_right = 638.0
+offset_bottom = 340.0
+color = Color(0.76, 0.86, 0.9, 1)
+
+[node name="PowderDrawer" type="ColorRect" parent="StationScenes/SinkStation"]
+layout_mode = 0
+offset_left = 104.0
+offset_top = 164.0
+offset_right = 430.0
+offset_bottom = 216.0
+color = Color(0.75, 0.47, 0.28, 1)
+
+[node name="SupplyBoxes" type="ColorRect" parent="StationScenes/SinkStation"]
+layout_mode = 0
+offset_left = 508.0
+offset_top = 70.0
+offset_right = 620.0
+offset_bottom = 110.0
+color = Color(0.96, 0.86, 0.63, 1)
+
+[node name="Title" type="Label" parent="StationScenes/SinkStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 28.0
+offset_right = 420.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 28
+text = "싱크대"
+
+[node name="Note" type="Label" parent="StationScenes/SinkStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 74.0
+offset_right = 500.0
+offset_bottom = 104.0
+text = "싱크대, 얼음 기계, 파우더 서랍, 비품 상자"
+
+[node name="MainTableStation" type="Control" parent="StationScenes"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackWall" type="ColorRect" parent="StationScenes/MainTableStation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.48, 0.32, 0.24, 1)
+
+[node name="WorkTable" type="ColorRect" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 260.0
+offset_right = 650.0
+offset_bottom = 360.0
+color = Color(0.42, 0.23, 0.15, 1)
+
+[node name="EspressoMachine" type="ColorRect" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 248.0
+offset_top = 118.0
+offset_right = 442.0
+offset_bottom = 250.0
+color = Color(0.62, 0.62, 0.6, 1)
+
+[node name="Portafilter" type="ColorRect" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 292.0
+offset_top = 214.0
+offset_right = 398.0
+offset_bottom = 242.0
+color = Color(0.13, 0.1, 0.09, 1)
+
+[node name="MilkDrawer" type="ColorRect" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 294.0
+offset_right = 286.0
+offset_bottom = 344.0
+color = Color(0.78, 0.86, 0.9, 1)
+
+[node name="SyrupDrawer" type="ColorRect" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 420.0
+offset_top = 294.0
+offset_right = 598.0
+offset_bottom = 344.0
+color = Color(0.83, 0.52, 0.45, 1)
+
+[node name="CupShelf" type="ColorRect" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 492.0
+offset_top = 64.0
+offset_right = 630.0
+offset_bottom = 112.0
+color = Color(0.94, 0.84, 0.68, 1)
+
+[node name="Title" type="Label" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 28.0
+offset_right = 420.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 28
+text = "메인 책상"
+
+[node name="Note" type="Label" parent="StationScenes/MainTableStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 74.0
+offset_right = 520.0
+offset_bottom = 104.0
+text = "샷 머신, 우유 서랍, 청/시럽 서랍, 컵 비품"
+
+[node name="SubTableStation" type="Control" parent="StationScenes"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackWall" type="ColorRect" parent="StationScenes/SubTableStation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.41, 0.38, 0.31, 1)
+
+[node name="LargeFridge" type="ColorRect" parent="StationScenes/SubTableStation"]
+layout_mode = 0
+offset_left = 80.0
+offset_top = 152.0
+offset_right = 270.0
+offset_bottom = 356.0
+color = Color(0.67, 0.78, 0.8, 1)
+
+[node name="Freezer" type="ColorRect" parent="StationScenes/SubTableStation"]
+layout_mode = 0
+offset_left = 288.0
+offset_top = 204.0
+offset_right = 430.0
+offset_bottom = 356.0
+color = Color(0.52, 0.68, 0.78, 1)
+
+[node name="SubCounter" type="ColorRect" parent="StationScenes/SubTableStation"]
+layout_mode = 0
+offset_left = 452.0
+offset_top = 246.0
+offset_right = 650.0
+offset_bottom = 356.0
+color = Color(0.36, 0.22, 0.16, 1)
+
+[node name="Microwave" type="ColorRect" parent="StationScenes/SubTableStation"]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 174.0
+offset_right = 626.0
+offset_bottom = 238.0
+color = Color(0.82, 0.82, 0.77, 1)
+
+[node name="TeaShelf" type="ColorRect" parent="StationScenes/SubTableStation"]
+layout_mode = 0
+offset_left = 322.0
+offset_top = 76.0
+offset_right = 620.0
+offset_bottom = 126.0
+color = Color(0.72, 0.44, 0.27, 1)
+
+[node name="Title" type="Label" parent="StationScenes/SubTableStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 28.0
+offset_right = 420.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 28
+text = "서브 책상"
+
+[node name="Note" type="Label" parent="StationScenes/SubTableStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 74.0
+offset_right = 520.0
+offset_bottom = 104.0
+text = "냉장고, 냉동실, 전자레인지, 티 비품"
+
+[node name="DisplayFridgeStation" type="Control" parent="StationScenes"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackWall" type="ColorRect" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.32, 0.37, 0.42, 1)
+
+[node name="GlassFridge" type="ColorRect" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 86.0
+offset_top = 82.0
+offset_right = 360.0
+offset_bottom = 356.0
+color = Color(0.62, 0.82, 0.88, 0.9)
+
+[node name="FridgeShelfA" type="ColorRect" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 106.0
+offset_top = 162.0
+offset_right = 340.0
+offset_bottom = 174.0
+color = Color(0.91, 0.96, 0.98, 1)
+
+[node name="FridgeShelfB" type="ColorRect" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 106.0
+offset_top = 248.0
+offset_right = 340.0
+offset_bottom = 260.0
+color = Color(0.91, 0.96, 0.98, 1)
+
+[node name="BottleRow" type="ColorRect" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 190.0
+offset_right = 316.0
+offset_bottom = 232.0
+color = Color(0.95, 0.52, 0.45, 1)
+
+[node name="SmoothieMachine" type="ColorRect" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 442.0
+offset_top = 148.0
+offset_right = 626.0
+offset_bottom = 356.0
+color = Color(0.82, 0.78, 0.7, 1)
+
+[node name="BlenderCup" type="ColorRect" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 490.0
+offset_top = 86.0
+offset_right = 580.0
+offset_bottom = 148.0
+color = Color(0.91, 0.73, 0.9, 1)
+
+[node name="Title" type="Label" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 28.0
+offset_right = 420.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 28
+text = "큰 냉장고"
+
+[node name="Note" type="Label" parent="StationScenes/DisplayFridgeStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 366.0
+offset_right = 600.0
+offset_bottom = 396.0
+text = "유리 냉장고와 스무디 기계"
+
+[node name="PickupCounterStation" type="Control" parent="StationScenes"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackWall" type="ColorRect" parent="StationScenes/PickupCounterStation"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.5, 0.36, 0.29, 1)
+
+[node name="PickupBar" type="ColorRect" parent="StationScenes/PickupCounterStation"]
+layout_mode = 0
+offset_left = 84.0
+offset_top = 252.0
+offset_right = 642.0
+offset_bottom = 350.0
+color = Color(0.38, 0.21, 0.13, 1)
+
+[node name="DrinkTray" type="ColorRect" parent="StationScenes/PickupCounterStation"]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 202.0
+offset_right = 326.0
+offset_bottom = 248.0
+color = Color(0.86, 0.72, 0.48, 1)
+
+[node name="StrawCup" type="ColorRect" parent="StationScenes/PickupCounterStation"]
+layout_mode = 0
+offset_left = 422.0
+offset_top = 180.0
+offset_right = 472.0
+offset_bottom = 248.0
+color = Color(0.93, 0.9, 0.78, 1)
+
+[node name="SyrupBottles" type="ColorRect" parent="StationScenes/PickupCounterStation"]
+layout_mode = 0
+offset_left = 500.0
+offset_top = 186.0
+offset_right = 604.0
+offset_bottom = 248.0
+color = Color(0.76, 0.39, 0.32, 1)
+
+[node name="PickupSign" type="ColorRect" parent="StationScenes/PickupCounterStation"]
+layout_mode = 0
+offset_left = 258.0
+offset_top = 68.0
+offset_right = 454.0
+offset_bottom = 126.0
+color = Color(0.93, 0.78, 0.43, 1)
+
+[node name="Title" type="Label" parent="StationScenes/PickupCounterStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 28.0
+offset_right = 420.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 28
+text = "카운터"
+
+[node name="Note" type="Label" parent="StationScenes/PickupCounterStation"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 366.0
+offset_right = 600.0
+offset_bottom = 396.0
+text = "픽업대, 빨대, 시럽, 손님이 음료를 받아가는 곳"
+
 [node name="LeftButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 4
@@ -135,15 +617,15 @@ text = "전달"
 [node name="OrderList" type="ItemList" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 6
+anchor_left = 1.0
 anchor_top = 0.5
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -180.0
-offset_top = -120.0
-offset_right = 180.0
-offset_bottom = 120.0
+offset_left = -372.0
+offset_top = -204.0
+offset_right = -40.0
+offset_bottom = 204.0
 grow_horizontal = 2
 grow_vertical = 2
 

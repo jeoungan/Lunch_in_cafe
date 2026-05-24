@@ -18,13 +18,13 @@ var assemblies: Dictionary = {}
 var _next_order_number := 1
 
 func spawn_order(menu_id: String, requests: Array[String]) -> String:
-	var menu := catalog.get_by_id(menu_id)
+	var menu: Dictionary = catalog.get_by_id(menu_id)
 	if menu.is_empty():
 		return ""
 	var order_id := "order_%d" % _next_order_number
 	_next_order_number += 1
-	var phase := shift.current_phase()
-	if not order_queue.add_order(order_id, menu_id, requests, phase["patience"]):
+	var phase: Dictionary = shift.current_phase()
+	if not order_queue.add_order(order_id, menu_id, requests, float(phase["patience"])):
 		return ""
 	assemblies[order_id] = DrinkAssembly.new(menu_id)
 	return order_id
@@ -33,15 +33,17 @@ func active_orders() -> Array[Dictionary]:
 	return order_queue.active_orders()
 
 func route_unavailable_actions(order_id: String) -> Array[String]:
-	var order := order_queue.get_order(order_id)
+	var order: Dictionary = order_queue.get_order(order_id)
 	if order.is_empty():
 		return []
-	var menu := catalog.get_by_id(order["menu_id"])
+	var menu: Dictionary = catalog.get_by_id(String(order["menu_id"]))
 	if menu.is_empty():
 		return []
-	var missing := progress.missing_actions(menu["required_actions"])
+	var required_actions: Array = menu["required_actions"]
+	var missing: Array[String] = progress.missing_actions(required_actions)
 	if assemblies.has(order_id):
-		var performed_actions: Array = assemblies[order_id].performed_actions()
+		var assembly: DrinkAssembly = assemblies[order_id]
+		var performed_actions: Array = assembly.performed_actions()
 		var unperformed_missing: Array[String] = []
 		for action in missing:
 			if not (action in performed_actions):
@@ -52,7 +54,7 @@ func route_unavailable_actions(order_id: String) -> Array[String]:
 	return missing
 
 func perform_action(order_id: String, action: String, layer: String, amount: float) -> bool:
-	var order := order_queue.get_order(order_id)
+	var order: Dictionary = order_queue.get_order(order_id)
 	if order.is_empty() or order.get("state", "") == "delivered":
 		return false
 	if not assemblies.has(order_id):
@@ -63,17 +65,17 @@ func perform_action(order_id: String, action: String, layer: String, amount: flo
 	return true
 
 func deliver(order_id: String, satisfied_requests: Array[String]) -> Dictionary:
-	var order := order_queue.get_order(order_id)
+	var order: Dictionary = order_queue.get_order(order_id)
 	if order.is_empty() or order.get("state", "") == "delivered" or not assemblies.has(order_id):
 		return {}
-	var menu := catalog.get_by_id(order["menu_id"])
+	var menu: Dictionary = catalog.get_by_id(String(order["menu_id"]))
 	if menu.is_empty():
 		return {}
 	var assembly: DrinkAssembly = assemblies[order_id]
-	var patience_total: float = order["patience_total"]
+	var patience_total: float = float(order["patience_total"])
 	var wait_ratio := 1.0
 	if patience_total > 0.0:
-		wait_ratio = 1.0 - (order["patience_remaining"] / patience_total)
+		wait_ratio = 1.0 - (float(order["patience_remaining"]) / patience_total)
 	var score := QualityScorer.new().score({
 		"required_actions": menu["required_actions"],
 		"performed_actions": assembly.performed_actions(),
@@ -82,7 +84,7 @@ func deliver(order_id: String, satisfied_requests: Array[String]) -> Dictionary:
 		"wait_ratio": wait_ratio,
 		"visual_neatness": 1.0
 	})
-	shift.record_delivery(score, menu["base_price"])
+	shift.record_delivery(score, int(menu["base_price"]))
 	order_queue.mark_delivered(order_id)
 	assemblies.erase(order_id)
 	return {"order_id": order_id, "score": score}

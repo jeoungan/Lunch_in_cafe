@@ -250,7 +250,7 @@ var _by_id: Dictionary = {}
 
 func _init() -> void:
 	for item in _menus:
-		_by_id[item["id"]] = item
+		_by_id[String(item["id"])] = item
 
 func get_all() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -261,4 +261,5 @@ func get_all() -> Array[Dictionary]:
 func get_by_id(id: String) -> Dictionary:
 	if not _by_id.has(id):
 		return {}
-	return _by_id[id].duplicate(true)
+	var menu: Dictionary = _by_id[id]
+	return menu.duplicate(true)

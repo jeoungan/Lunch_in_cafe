@@ -3,7 +3,8 @@ extends RefCounted
 func get_test_methods() -> Array[String]:
 	return [
 		"test_station_view_cycles_right_and_left",
-		"test_main_scene_can_be_loaded"
+		"test_main_scene_can_be_loaded",
+		"test_main_scene_has_six_station_panels"
 	]
 
 func test_station_view_cycles_right_and_left() -> String:
@@ -39,4 +40,25 @@ func test_main_scene_can_be_loaded() -> String:
 	var main_scene = load("res://scenes/main/Main.tscn")
 	if main_scene == null:
 		return "Main scene should load"
+	return ""
+
+func test_main_scene_has_six_station_panels() -> String:
+	var main = load("res://scenes/main/Main.tscn").instantiate()
+	var station_scenes = main.get_node_or_null("StationScenes")
+	if station_scenes == null:
+		main.free()
+		return "Main scene should include StationScenes"
+	var expected := [
+		"RegisterStation",
+		"SinkStation",
+		"MainTableStation",
+		"SubTableStation",
+		"DisplayFridgeStation",
+		"PickupCounterStation"
+	]
+	for panel_name in expected:
+		if station_scenes.get_node_or_null(panel_name) == null:
+			main.free()
+			return "Missing station panel: %s" % panel_name
+	main.free()
 	return ""

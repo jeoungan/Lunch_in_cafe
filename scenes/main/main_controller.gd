@@ -2,12 +2,22 @@ extends Control
 
 const GameState = preload("res://src/core/game_state.gd")
 const StationView = preload("res://scenes/stations/station_view.gd")
+const DrinkAssembly = preload("res://src/core/drink_assembly.gd")
 
 var game := GameState.new()
 var station_view := StationView.new()
 var selected_order_id: String = ""
 var _displayed_order_rows: Array[String] = []
 var _displayed_order_ids: Array[String] = []
+
+const STATION_PANEL_NAMES := {
+	"register": "RegisterStation",
+	"sink": "SinkStation",
+	"main_table": "MainTableStation",
+	"sub_table": "SubTableStation",
+	"display_fridge": "DisplayFridgeStation",
+	"pickup_counter": "PickupCounterStation"
+}
 
 func _ready() -> void:
 	add_child(station_view)
@@ -37,21 +47,25 @@ func _on_spawn_order_pressed() -> void:
 func _on_basic_step_pressed() -> void:
 	if selected_order_id == "":
 		return
-	var order := game.order_queue.get_order(selected_order_id)
+	var order: Dictionary = game.order_queue.get_order(selected_order_id)
 	if order.is_empty() or not game.assemblies.has(selected_order_id):
 		return
-	var menu := game.catalog.get_by_id(order["menu_id"])
+	var menu_id := String(order["menu_id"])
+	var menu: Dictionary = game.catalog.get_by_id(menu_id)
 	if menu.is_empty():
 		return
-	var performed_actions: Array = game.assemblies[selected_order_id].performed_actions()
-	for action in menu["required_actions"]:
+	var assembly: DrinkAssembly = game.assemblies[selected_order_id]
+	var performed_actions: Array = assembly.performed_actions()
+	var required_actions: Array = menu["required_actions"]
+	for required_action in required_actions:
+		var action := String(required_action)
 		if action == "deliver_order":
 			continue
 		if action in performed_actions:
 			continue
 		if not game.progress.can_perform(action):
 			continue
-		if game.perform_action(selected_order_id, action, _layer_for_player_action(action, order["menu_id"]), 1.0):
+		if game.perform_action(selected_order_id, action, _layer_for_player_action(action, menu_id), 1.0):
 			performed_actions.append(action)
 	_refresh()
 
@@ -66,7 +80,7 @@ func _on_deliver_pressed() -> void:
 		return
 	_collect_completed_boss_tasks()
 	game.perform_action(selected_order_id, "deliver_order", "lid", 1.0)
-	var result := game.deliver(selected_order_id, ["to_go"])
+	var result: Dictionary = game.deliver(selected_order_id, ["to_go"])
 	if not result.is_empty():
 		_select_first_active_order()
 	_refresh()
@@ -79,12 +93,13 @@ func _on_order_selected(index: int) -> void:
 
 func _refresh() -> void:
 	%StationLabel.text = station_view.station_title()
-	var phase := game.shift.current_phase()
+	_refresh_station_scene()
+	var phase: Dictionary = game.shift.current_phase()
 	%PhaseLabel.text = "Phase: %s / Money: %d" % [phase.get("name", "unknown"), game.settlement().get("money", 0)]
 	var order_rows: Array[String] = []
 	var order_ids: Array[String] = []
 	for order in game.active_orders():
-		var order_id: String = order.get("id", "")
+		var order_id := String(order.get("id", ""))
 		order_ids.append(order_id)
 		order_rows.append("%s - %s / Patience: %.0f / %s" % [
 			order_id,
@@ -104,32 +119,43 @@ func _refresh() -> void:
 	if selected_order_id in _displayed_order_ids:
 		%OrderList.select(_displayed_order_ids.find(selected_order_id))
 
+func _refresh_station_scene() -> void:
+	var station_scenes := get_node_or_null("%StationScenes")
+	if station_scenes == null:
+		return
+	var current_panel_name := String(STATION_PANEL_NAMES.get(station_view.current_station_id(), ""))
+	for child in station_scenes.get_children():
+		child.visible = child.name == current_panel_name
+
 func _collect_completed_boss_tasks() -> void:
 	for task in game.boss_queue.collect_completed():
-		var order_id: String = task.get("order_id", "")
-		var action: String = task.get("action", "")
+		var order_id := String(task.get("order_id", ""))
+		var action := String(task.get("action", ""))
 		if order_id == "" or action == "" or not game.assemblies.has(order_id):
 			continue
-		if action in game.assemblies[order_id].performed_actions():
+		var assembly: DrinkAssembly = game.assemblies[order_id]
+		if action in assembly.performed_actions():
 			continue
-		game.assemblies[order_id].apply_action(action, _layer_for_boss_action(action), 1.0)
+		assembly.apply_action(action, _layer_for_boss_action(action), 1.0)
 
 func _route_unperformed_boss_actions(order_id: String) -> void:
 	if not game.assemblies.has(order_id):
 		return
-	var performed_actions: Array = game.assemblies[order_id].performed_actions()
+	var assembly: DrinkAssembly = game.assemblies[order_id]
+	var performed_actions: Array = assembly.performed_actions()
 	for action in _missing_boss_actions(order_id):
 		if not (action in performed_actions):
 			game.boss_queue.enqueue(order_id, action)
 
 func _missing_boss_actions(order_id: String) -> Array[String]:
-	var order := game.order_queue.get_order(order_id)
+	var order: Dictionary = game.order_queue.get_order(order_id)
 	if order.is_empty():
 		return []
-	var menu := game.catalog.get_by_id(order["menu_id"])
+	var menu: Dictionary = game.catalog.get_by_id(String(order["menu_id"]))
 	if menu.is_empty():
 		return []
-	return game.progress.missing_actions(menu["required_actions"])
+	var required_actions: Array = menu["required_actions"]
+	return game.progress.missing_actions(required_actions)
 
 func _layer_for_boss_action(action: String) -> String:
 	if action == "pull_espresso":

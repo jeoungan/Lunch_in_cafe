@@ -10,9 +10,12 @@ const PHASES := [
 ]
 
 func phase_at(elapsed_seconds: float) -> Dictionary:
-	if elapsed_seconds < PHASES[0]["start"]:
-		return PHASES[0].duplicate(true)
-	for phase in PHASES:
-		if elapsed_seconds >= phase["start"] and elapsed_seconds < phase["end"]:
+	var first_phase: Dictionary = PHASES[0]
+	if elapsed_seconds < float(first_phase["start"]):
+		return first_phase.duplicate(true)
+	for raw_phase in PHASES:
+		var phase: Dictionary = raw_phase
+		if elapsed_seconds >= float(phase["start"]) and elapsed_seconds < float(phase["end"]):
 			return phase.duplicate(true)
-	return PHASES[PHASES.size() - 1].duplicate(true)
+	var last_phase: Dictionary = PHASES[PHASES.size() - 1]
+	return last_phase.duplicate(true)

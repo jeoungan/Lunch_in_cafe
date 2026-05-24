@@ -22,14 +22,14 @@ var _capacity := {
 func amount(station: String, supply: String) -> int:
 	if not _stock.has(station) or not _stock[station].has(supply):
 		return 0
-	return _stock[station][supply]
+	return int(_stock[station][supply])
 
 func consume(station: String, supply: String, count: int) -> bool:
 	if count <= 0:
 		return false
 	if amount(station, supply) < count:
 		return false
-	_stock[station][supply] -= count
+	_stock[station][supply] = int(_stock[station][supply]) - count
 	return true
 
 func restock(station: String, supply: String, count: int, capacity_count: int = -1) -> void:
@@ -41,10 +41,10 @@ func restock(station: String, supply: String, count: int, capacity_count: int = 
 	if not _stock[station].has(supply):
 		_stock[station][supply] = 0
 		_capacity[station][supply] = capacity_count if capacity_count > 0 else count
-	var max_amount: int = _capacity[station][supply]
-	_stock[station][supply] = min(max_amount, _stock[station][supply] + count)
+	var max_amount: int = int(_capacity[station][supply])
+	_stock[station][supply] = min(max_amount, int(_stock[station][supply]) + count)
 
 func is_low(station: String, supply: String) -> bool:
 	if not _capacity.has(station) or not _capacity[station].has(supply):
 		return true
-	return amount(station, supply) <= int(ceil(_capacity[station][supply] * 0.25))
+	return amount(station, supply) <= int(ceil(float(_capacity[station][supply]) * 0.25))

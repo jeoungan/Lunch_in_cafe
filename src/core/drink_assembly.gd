@@ -35,7 +35,7 @@ func amount_for(action: String) -> float:
 	if _amounts_by_action.has(action):
 		var amounts: Array = _amounts_by_action[action]
 		if not amounts.is_empty():
-			return amounts[amounts.size() - 1]
+			return float(amounts[amounts.size() - 1])
 	return 0.0
 
 func amounts_for(action: String) -> Array[float]:
