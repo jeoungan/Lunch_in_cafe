@@ -9,7 +9,7 @@ func get_test_methods() -> Array[String]:
 
 func test_catalog_has_at_least_30_items() -> String:
 	var catalog = load("res://src/core/menu_catalog.gd").new()
-	var menus := catalog.get_all()
+	var menus: Array[Dictionary] = catalog.get_all()
 	if menus.size() < 30:
 		return "Menu catalog should contain at least 30 items"
 	for item in menus:
@@ -19,7 +19,7 @@ func test_catalog_has_at_least_30_items() -> String:
 
 func test_catalog_uses_required_categories() -> String:
 	var catalog = load("res://src/core/menu_catalog.gd").new()
-	var categories := {}
+	var categories: Dictionary = {}
 	for item in catalog.get_all():
 		categories[item["category"]] = true
 	for category in ["coffee", "tea", "latte", "ade", "powder", "smoothie", "display", "dessert"]:
@@ -29,7 +29,7 @@ func test_catalog_uses_required_categories() -> String:
 
 func test_low_level_menu_can_require_boss_action() -> String:
 	var catalog = load("res://src/core/menu_catalog.gd").new()
-	var americano := catalog.get_by_id("iced_americano")
+	var americano: Dictionary = catalog.get_by_id("iced_americano")
 	if americano.is_empty():
 		return "iced_americano should exist"
 	if not "pull_espresso" in americano["required_actions"]:

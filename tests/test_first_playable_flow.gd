@@ -1,104 +1,108 @@
 extends RefCounted
 
+var _test_tree: SceneTree = null
+
+func set_test_tree(value: SceneTree) -> void:
+	_test_tree = value
+
 func get_test_methods() -> Array[String]:
 	return [
 		"test_level_one_americano_boss_help_flow",
-		"test_main_controller_buttons_complete_first_order",
-		"test_main_controller_basic_step_completes_spawned_iced_tea",
+		"test_main_controller_completes_layered_americano",
+		"test_main_controller_handles_packaging_change_and_restock",
 		"test_shift_can_tick_through_peak_and_settle"
 	]
 
 func test_level_one_americano_boss_help_flow() -> String:
 	var game = load("res://src/core/game_state.gd").new()
-	var order_id: String = game.spawn_order("iced_americano", ["to_go"])
+	var requests: Array[String] = ["to_go"]
+	var order_id: String = game.spawn_order("iced_americano", requests)
 	if order_id == "":
 		return "First playable should spawn an iced americano order"
-	var unavailable := game.route_unavailable_actions(order_id)
+	var unavailable: Array[String] = game.route_unavailable_actions(order_id)
 	if unavailable != ["pull_espresso"]:
 		return "Level 1 should route only pull_espresso to boss, got %s" % [unavailable]
 	if not game.perform_action(order_id, "prepare_packaging", "cup", 1.0):
-		return "Player should be able to prepare packaging"
-	if not game.perform_action(order_id, "add_ice", "ice", 1.0):
-		return "Player should be able to add ice"
+		return "Player should be able to prepare an empty cup"
 	if not game.perform_action(order_id, "pour_water", "water", 1.0):
-		return "Player should be able to pour water"
+		return "Player should be able to pour water before ice"
+	if not game.perform_action(order_id, "add_ice", "ice", 1.0):
+		return "Player should be able to add ice after water"
 	game.tick(5.0)
-	var completed: Array = game.boss_queue.collect_completed()
+	var completed: Array[Dictionary] = game.boss_queue.collect_completed()
 	if completed.size() != 1:
-		return "Boss queue should complete pull_espresso, got %d completed tasks" % completed.size()
-	var boss_task: Dictionary = completed[0]
-	if boss_task.get("order_id", "") != order_id or boss_task.get("action", "") != "pull_espresso":
-		return "Boss completed task should match order and action, got %s" % [boss_task]
-	if not game.assemblies.has(order_id):
-		return "Assembly should exist before delivery"
-	game.assemblies[order_id].apply_action("pull_espresso", "espresso", 1.0)
+		return "Boss queue should complete one espresso task"
+	if not game.apply_boss_result(order_id, "pull_espresso", "espresso", 1.0):
+		return "Boss espresso should be added by the player"
 	if not game.perform_action(order_id, "deliver_order", "lid", 1.0):
-		return "Player should be able to mark order delivered before scoring"
-	var actions_before_delivery: Array = game.assemblies[order_id].performed_actions()
-	if actions_before_delivery != ["prepare_packaging", "add_ice", "pour_water", "pull_espresso", "deliver_order"]:
-		return "Assembly should have completed americano recipe before delivery, got %s" % [actions_before_delivery]
-	var result: Dictionary = game.deliver(order_id, ["to_go"])
-	if result.is_empty():
-		return "Delivery should return a score result"
-	if result["score"]["total"] < 80:
-		return "First playable delivery should score at least 80, got %d" % result["score"]["total"]
-	if game.assemblies.has(order_id):
-		return "Delivery should erase the assembly"
+		return "Player should be able to finish the drink"
+	var expected: Array[String] = ["prepare_packaging", "pour_water", "add_ice", "pull_espresso", "deliver_order"]
+	if game.assemblies[order_id].performed_actions() != expected:
+		return "Americano recipe order should be exact"
+	var satisfied_requests: Array[String] = ["to_go"]
+	var result: Dictionary = game.deliver(order_id, satisfied_requests)
+	if result.is_empty() or result["score"]["total"] < 80:
+		return "Completed first order should score at least 80"
 	return ""
 
-func test_main_controller_buttons_complete_first_order() -> String:
+func test_main_controller_completes_layered_americano() -> String:
 	var main = load("res://scenes/main/Main.tscn").instantiate()
-	main._ready()
+	_test_tree.root.add_child(main)
+	if main.selected_order_id != "":
+		main.free()
+		return "Customer order should wait for player acceptance"
+	main._on_primary_button_pressed()
 	var order_id: String = main.selected_order_id
 	if order_id == "":
-		return "Main controller should select the first spawned order"
-	main._on_basic_step_pressed()
-	main._on_boss_help_pressed()
+		main.free()
+		return "Order button should accept the waiting customer"
+	main.manufacturing.set_station("sink")
+	for step_id in ["cup", "water", "ice"]:
+		if not main.manufacturing.attempt_step(step_id):
+			main.free()
+			return "Sink step failed: %s" % step_id
+	main.manufacturing.set_station("main_table")
+	main.manufacturing._on_boss_button_pressed()
 	main._process(5.0)
-	main._on_boss_help_pressed()
-	main._process(5.0)
-	var performed_actions: Array = main.game.assemblies[order_id].performed_actions()
-	if performed_actions.count("pull_espresso") != 1:
-		return "Repeated boss help should not duplicate pull_espresso, got %s" % [performed_actions]
-	main._on_deliver_pressed()
+	if not main.manufacturing.attempt_step("espresso"):
+		main.free()
+		return "Boss espresso should become draggable after the wait"
+	main.manufacturing.set_station("pickup_counter")
+	for step_id in ["lid", "sleeve"]:
+		if not main.manufacturing.attempt_step(step_id):
+			main.free()
+			return "Pickup step failed: %s" % step_id
+	main._set_station(5, false)
+	main._on_primary_button_pressed()
 	var settlement: Dictionary = main.game.settlement()
-	if settlement.get("money", 0) <= 0:
-		return "Controller button flow should deliver the first order and earn money"
-	if not main.game.assemblies.is_empty():
-		return "Controller delivery should clean up delivered assemblies"
+	if settlement.get("money", 0) <= 0 or main.game.assemblies.has(order_id):
+		main.free()
+		return "Layered drink delivery should earn money and close the assembly"
 	main.free()
 	return ""
 
-func test_main_controller_basic_step_completes_spawned_iced_tea() -> String:
+func test_main_controller_handles_packaging_change_and_restock() -> String:
 	var main = load("res://scenes/main/Main.tscn").instantiate()
-	main._ready()
-	main._on_spawn_order_pressed()
-	var order_id: String = main.selected_order_id
-	if order_id == "":
+	_test_tree.root.add_child(main)
+	main._on_primary_button_pressed()
+	main._process(7.1)
+	if not main._packaging_change_pending:
 		main.free()
-		return "Spawn button should select the new iced tea order"
-	var order: Dictionary = main.game.order_queue.get_order(order_id)
-	if order.get("menu_id", "") != "iced_tea":
+		return "Customer should request a packaging change during the order"
+	main._on_primary_button_pressed()
+	if not main._to_go or main._packaging_change_pending:
 		main.free()
-		return "Spawn button should create iced tea, got %s" % order.get("menu_id", "")
-	main._on_basic_step_pressed()
-	var performed_actions: Array = main.game.assemblies[order_id].performed_actions()
-	if performed_actions != ["prepare_packaging", "add_ice", "add_premade_base", "pour_water"]:
+		return "Player should be able to accept the packaging change"
+	if "to_go" not in main.game.order_queue.get_order(main.selected_order_id)["requests"]:
 		main.free()
-		return "Basic Step should complete iced tea actions before delivery, got %s" % [performed_actions]
-	main._on_basic_step_pressed()
-	var repeated_actions: Array = main.game.assemblies[order_id].performed_actions()
-	if repeated_actions != performed_actions:
+		return "Accepted packaging change should update the live order data"
+	main._set_station(5, false)
+	var before: int = main.game.supply_amount("pickup_counter", "straw")
+	main._on_secondary_button_pressed()
+	var after: int = main.game.supply_amount("pickup_counter", "straw")
+	if after <= before:
 		main.free()
-		return "Basic Step should not duplicate completed iced tea actions, got %s" % [repeated_actions]
-	main._on_deliver_pressed()
-	var settlement: Dictionary = main.game.settlement()
-	if settlement.get("money", 0) <= 0:
-		main.free()
-		return "Delivering the Basic Step iced tea should earn money"
-	if main.game.assemblies.has(order_id):
-		main.free()
-		return "Delivered iced tea assembly should be cleaned up"
+		return "Restock action should increase straw stock"
 	main.free()
 	return ""
 
@@ -107,7 +111,7 @@ func test_shift_can_tick_through_peak_and_settle() -> String:
 	game.tick(420.0)
 	var phase: Dictionary = game.shift.current_phase()
 	if phase.get("name", "") != "peak":
-		return "Shift should be in peak after 420 seconds, got %s" % phase.get("name", "")
+		return "Shift should be in peak after 420 seconds"
 	game.tick(180.0)
 	if not game.shift.is_finished():
 		return "Shift should finish after 600 seconds"

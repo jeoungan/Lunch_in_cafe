@@ -1,5 +1,8 @@
 .worktrees/
 .godot/
+.codex-godot-profile/
+artifacts/qa/
+index*.png.import
 .env
 .env.*
 !.env.example

@@ -16,7 +16,8 @@ func test_level_one_allows_basic_actions() -> String:
 
 func test_level_one_requires_boss_for_espresso() -> String:
 	var progress = load("res://src/core/player_progress.gd").new(1)
-	var missing := progress.missing_actions(["prepare_packaging", "add_ice", "pour_water", "pull_espresso", "deliver_order"])
+	var required_actions: Array[String] = ["prepare_packaging", "add_ice", "pour_water", "pull_espresso", "deliver_order"]
+	var missing: Array[String] = progress.missing_actions(required_actions)
 	if missing != ["pull_espresso"]:
 		return "Level 1 iced americano should only miss pull_espresso, got %s" % [missing]
 	return ""

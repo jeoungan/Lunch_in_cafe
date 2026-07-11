@@ -28,6 +28,12 @@ func get_order(order_id: String) -> Dictionary:
 			return order.to_dict()
 	return {}
 
+func add_request(order_id: String, request: String) -> bool:
+	for order in _orders:
+		if order.id == order_id and order.state != "delivered":
+			return order.add_request(request)
+	return false
+
 func active_orders() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for order in _orders:

@@ -15,14 +15,13 @@ func unlocked_actions() -> Array[String]:
 		GameDefs.ACTION_ADD_ICE,
 		GameDefs.ACTION_POUR_WATER,
 		GameDefs.ACTION_POUR_SPARKLING_WATER,
+		GameDefs.ACTION_POUR_MILK,
 		GameDefs.ACTION_ADD_PREMADE_BASE,
 		GameDefs.ACTION_DELIVER_ORDER,
 		GameDefs.ACTION_RESTOCK_SUPPLIES
 	]
 	if level >= 2:
 		actions.append(GameDefs.ACTION_MEASURE_SYRUP)
-	if level >= 3:
-		actions.append(GameDefs.ACTION_POUR_MILK)
 	if level >= 4:
 		actions.append(GameDefs.ACTION_MEASURE_POWDER)
 		actions.append(GameDefs.ACTION_DISSOLVE_POWDER)

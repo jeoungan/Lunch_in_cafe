@@ -8,12 +8,14 @@ const OrderQueue = preload("res://src/core/order_queue.gd")
 const DrinkAssembly = preload("res://src/core/drink_assembly.gd")
 const QualityScorer = preload("res://src/core/quality_scorer.gd")
 const ShiftManager = preload("res://src/core/shift_manager.gd")
+const Inventory = preload("res://src/core/inventory.gd")
 
 var catalog := MenuCatalog.new()
 var progress := PlayerProgress.new(1)
 var boss_queue := BossQueue.new()
 var order_queue := OrderQueue.new()
 var shift := ShiftManager.new()
+var inventory := Inventory.new()
 var assemblies: Dictionary = {}
 var _next_order_number := 1
 
@@ -32,6 +34,9 @@ func spawn_order(menu_id: String, requests: Array[String]) -> String:
 func active_orders() -> Array[Dictionary]:
 	return order_queue.active_orders()
 
+func add_order_request(order_id: String, request: String) -> bool:
+	return order_queue.add_request(order_id, request)
+
 func route_unavailable_actions(order_id: String) -> Array[String]:
 	var order: Dictionary = order_queue.get_order(order_id)
 	if order.is_empty():
@@ -39,19 +44,18 @@ func route_unavailable_actions(order_id: String) -> Array[String]:
 	var menu: Dictionary = catalog.get_by_id(String(order["menu_id"]))
 	if menu.is_empty():
 		return []
+	if not assemblies.has(order_id):
+		return []
 	var required_actions: Array = menu["required_actions"]
-	var missing: Array[String] = progress.missing_actions(required_actions)
-	if assemblies.has(order_id):
-		var assembly: DrinkAssembly = assemblies[order_id]
-		var performed_actions: Array = assembly.performed_actions()
-		var unperformed_missing: Array[String] = []
-		for action in missing:
-			if not (action in performed_actions):
-				unperformed_missing.append(action)
-		missing = unperformed_missing
-	for action in missing:
+	var assembly: DrinkAssembly = assemblies[order_id]
+	var performed_actions: Array = assembly.performed_actions()
+	for raw_action in required_actions:
+		var action := String(raw_action)
+		if action in performed_actions or progress.can_perform(action):
+			continue
 		boss_queue.enqueue(order_id, action)
-	return missing
+		return [action]
+	return []
 
 func perform_action(order_id: String, action: String, layer: String, amount: float) -> bool:
 	var order: Dictionary = order_queue.get_order(order_id)
@@ -61,12 +65,38 @@ func perform_action(order_id: String, action: String, layer: String, amount: flo
 		return false
 	if not progress.can_perform(action):
 		return false
+	if not _is_next_action(order_id, action):
+		return false
 	assemblies[order_id].apply_action(action, layer, amount)
 	return true
+
+func apply_boss_result(order_id: String, action: String, layer: String, amount: float) -> bool:
+	var order: Dictionary = order_queue.get_order(order_id)
+	if order.is_empty() or order.get("state", "") == "delivered":
+		return false
+	if not assemblies.has(order_id) or progress.can_perform(action):
+		return false
+	if not _is_next_action(order_id, action):
+		return false
+	assemblies[order_id].apply_action(action, layer, amount)
+	return true
+
+func can_deliver(order_id: String) -> bool:
+	var order: Dictionary = order_queue.get_order(order_id)
+	if order.is_empty() or not assemblies.has(order_id):
+		return false
+	var menu: Dictionary = catalog.get_by_id(String(order["menu_id"]))
+	if menu.is_empty():
+		return false
+	var required_actions: Array = menu["required_actions"]
+	var performed_actions: Array = assemblies[order_id].performed_actions()
+	return performed_actions == required_actions
 
 func deliver(order_id: String, satisfied_requests: Array[String]) -> Dictionary:
 	var order: Dictionary = order_queue.get_order(order_id)
 	if order.is_empty() or order.get("state", "") == "delivered" or not assemblies.has(order_id):
+		return {}
+	if not can_deliver(order_id):
 		return {}
 	var menu: Dictionary = catalog.get_by_id(String(order["menu_id"]))
 	if menu.is_empty():
@@ -96,3 +126,25 @@ func tick(delta_seconds: float) -> void:
 
 func settlement() -> Dictionary:
 	return shift.settlement()
+
+func supply_amount(station: String, supply: String) -> int:
+	return inventory.amount(station, supply)
+
+func consume_supply(station: String, supply: String, count: int = 1) -> bool:
+	return inventory.consume(station, supply, count)
+
+func restock_supply(station: String, supply: String, count: int) -> void:
+	inventory.restock(station, supply, count)
+
+func _is_next_action(order_id: String, action: String) -> bool:
+	var order: Dictionary = order_queue.get_order(order_id)
+	if order.is_empty() or not assemblies.has(order_id):
+		return false
+	var menu: Dictionary = catalog.get_by_id(String(order["menu_id"]))
+	if menu.is_empty():
+		return false
+	var required_actions: Array = menu["required_actions"]
+	var performed_actions: Array = assemblies[order_id].performed_actions()
+	if performed_actions.size() >= required_actions.size():
+		return false
+	return String(required_actions[performed_actions.size()]) == action

@@ -5,6 +5,7 @@ func get_test_methods() -> Array[String]:
 		"test_traffic_schedule_matches_shift_design",
 		"test_order_patience_decreases",
 		"test_to_go_request_is_recorded",
+		"test_mid_order_request_is_added_once",
 		"test_delivered_order_stops_ticking",
 		"test_duplicate_order_id_is_ignored",
 		"test_waiting_order_becomes_angry",
@@ -28,26 +29,41 @@ func test_traffic_schedule_matches_shift_design() -> String:
 
 func test_order_patience_decreases() -> String:
 	var queue = load("res://src/core/order_queue.gd").new()
-	queue.add_order("order_1", "iced_americano", ["to_go"], 30.0)
+	var requests: Array[String] = ["to_go"]
+	queue.add_order("order_1", "iced_americano", requests, 30.0)
 	queue.tick(5.0)
-	var order := queue.get_order("order_1")
+	var order: Dictionary = queue.get_order("order_1")
 	if order["patience_remaining"] != 25.0:
 		return "Patience should decrease from 30 to 25"
 	return ""
 
 func test_to_go_request_is_recorded() -> String:
-	var order = load("res://src/core/order_model.gd").new("order_1", "iced_tea", ["to_go"], 40.0)
+	var requests: Array[String] = ["to_go"]
+	var order = load("res://src/core/order_model.gd").new("order_1", "iced_tea", requests, 40.0)
 	if not order.has_request("to_go"):
 		return "Order should include to_go request"
 	return ""
 
+func test_mid_order_request_is_added_once() -> String:
+	var queue = load("res://src/core/order_queue.gd").new()
+	var requests: Array[String] = []
+	queue.add_order("order_1", "iced_americano", requests, 40.0)
+	if not queue.add_request("order_1", "to_go"):
+		return "A new mid-order request should be accepted"
+	if queue.add_request("order_1", "to_go"):
+		return "A duplicate mid-order request should be ignored"
+	if queue.get_order("order_1")["requests"] != ["to_go"]:
+		return "The accepted request should be stored exactly once"
+	return ""
+
 func test_delivered_order_stops_ticking() -> String:
 	var queue = load("res://src/core/order_queue.gd").new()
-	queue.add_order("order_1", "iced_americano", [], 30.0)
+	var requests: Array[String] = []
+	queue.add_order("order_1", "iced_americano", requests, 30.0)
 	queue.tick(5.0)
 	queue.mark_delivered("order_1")
 	queue.tick(10.0)
-	var order := queue.get_order("order_1")
+	var order: Dictionary = queue.get_order("order_1")
 	if order["patience_remaining"] != 25.0:
 		return "Delivered orders should stop losing patience"
 	if order["elapsed"] != 5.0:
@@ -56,9 +72,10 @@ func test_delivered_order_stops_ticking() -> String:
 
 func test_duplicate_order_id_is_ignored() -> String:
 	var queue = load("res://src/core/order_queue.gd").new()
-	if not queue.add_order("order_1", "iced_americano", [], 30.0):
+	var requests: Array[String] = []
+	if not queue.add_order("order_1", "iced_americano", requests, 30.0):
 		return "First order insert should succeed"
-	if queue.add_order("order_1", "iced_tea", [], 40.0):
+	if queue.add_order("order_1", "iced_tea", requests, 40.0):
 		return "Duplicate order ID should be rejected"
 	if queue.active_orders().size() != 1:
 		return "Duplicate order should not be active"
@@ -66,7 +83,8 @@ func test_duplicate_order_id_is_ignored() -> String:
 
 func test_waiting_order_becomes_angry() -> String:
 	var queue = load("res://src/core/order_queue.gd").new()
-	queue.add_order("order_1", "iced_americano", [], 3.0)
+	var requests: Array[String] = []
+	queue.add_order("order_1", "iced_americano", requests, 3.0)
 	queue.tick(3.0)
 	if queue.get_order("order_1")["state"] != "angry":
 		return "Waiting order should become angry when patience reaches zero"
@@ -74,8 +92,9 @@ func test_waiting_order_becomes_angry() -> String:
 
 func test_order_dict_is_copy_isolated() -> String:
 	var queue = load("res://src/core/order_queue.gd").new()
-	queue.add_order("order_1", "iced_americano", ["to_go"], 30.0)
-	var order := queue.get_order("order_1")
+	var requests: Array[String] = ["to_go"]
+	queue.add_order("order_1", "iced_americano", requests, 30.0)
+	var order: Dictionary = queue.get_order("order_1")
 	order["requests"].append("fake_request")
 	if "fake_request" in queue.get_order("order_1")["requests"]:
 		return "Order dictionary should not expose mutable request array"

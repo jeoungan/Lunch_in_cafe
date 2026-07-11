@@ -21,7 +21,7 @@ func test_shift_ends_at_ten_minutes() -> String:
 func test_rewards_include_money_experience_and_reputation() -> String:
 	var shift = load("res://src/core/shift_manager.gd").new()
 	shift.record_delivery({"total": 92}, 5500)
-	var settlement := shift.settlement()
+	var settlement: Dictionary = shift.settlement()
 	if settlement["money"] <= 0:
 		return "Settlement should include money"
 	if settlement["experience"] <= 0:
@@ -44,7 +44,7 @@ func test_delivery_rewards_are_clamped() -> String:
 	if shift.settlement()["money"] != 1000:
 		return "Score above 100 should not overpay beyond base price"
 	shift.record_delivery({"total": -50}, -1000)
-	var settlement := shift.settlement()
+	var settlement: Dictionary = shift.settlement()
 	if settlement["money"] != 1000:
 		return "Negative score/base price should not subtract money"
 	if settlement["experience"] < 10:
@@ -54,7 +54,7 @@ func test_delivery_rewards_are_clamped() -> String:
 func test_discard_reduces_reputation() -> String:
 	var shift = load("res://src/core/shift_manager.gd").new()
 	shift.record_discard()
-	var settlement := shift.settlement()
+	var settlement: Dictionary = shift.settlement()
 	if settlement["discarded_count"] != 1:
 		return "Discard count should increase"
 	if settlement["reputation"] != -1:
@@ -63,7 +63,7 @@ func test_discard_reduces_reputation() -> String:
 
 func test_settlement_returns_copy() -> String:
 	var shift = load("res://src/core/shift_manager.gd").new()
-	var settlement := shift.settlement()
+	var settlement: Dictionary = shift.settlement()
 	settlement["money"] = 999
 	if shift.settlement()["money"] == 999:
 		return "Settlement mutation should not affect shift state"

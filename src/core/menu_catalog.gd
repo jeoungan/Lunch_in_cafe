@@ -8,8 +8,8 @@ var _menus: Array[Dictionary] = [
 		"id": "iced_americano",
 		"name": "Iced Americano",
 		"category": GameDefsResource.CATEGORY_COFFEE,
-		"required_actions": [GameDefsResource.ACTION_PREPARE_PACKAGING, GameDefsResource.ACTION_ADD_ICE, GameDefsResource.ACTION_POUR_WATER, GameDefsResource.ACTION_PULL_ESPRESSO, GameDefsResource.ACTION_DELIVER_ORDER],
-		"visual_layers": ["clear_cup", "ice", "water", "espresso"],
+		"required_actions": [GameDefsResource.ACTION_PREPARE_PACKAGING, GameDefsResource.ACTION_POUR_WATER, GameDefsResource.ACTION_ADD_ICE, GameDefsResource.ACTION_PULL_ESPRESSO, GameDefsResource.ACTION_DELIVER_ORDER],
+		"visual_layers": ["clear_cup", "water", "ice", "espresso", "lid", "sleeve"],
 		"base_price": 3500
 	},
 	{

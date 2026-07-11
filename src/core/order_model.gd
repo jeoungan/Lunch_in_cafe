@@ -25,6 +25,12 @@ func tick(delta_seconds: float) -> void:
 func has_request(request: String) -> bool:
 	return request in requests
 
+func add_request(request: String) -> bool:
+	if request.is_empty() or request in requests:
+		return false
+	requests.append(request)
+	return true
+
 func to_dict() -> Dictionary:
 	return {
 		"id": id,

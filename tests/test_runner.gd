@@ -3,6 +3,9 @@ extends SceneTree
 var failures: Array[String] = []
 
 func _init() -> void:
+	call_deferred("_run_tests")
+
+func _run_tests() -> void:
 	var test_paths := _collect_tests("res://tests")
 	for path in test_paths:
 		_run_suite(path)
@@ -34,10 +37,12 @@ func _collect_tests(dir_path: String) -> Array[String]:
 
 func _run_suite(path: String) -> void:
 	var script := load(path)
-	if script == null:
+	if script == null or not script.can_instantiate():
 		failures.append("Cannot load test suite: %s" % path)
 		return
 	var suite = script.new()
+	if suite.has_method("set_test_tree"):
+		suite.call("set_test_tree", self)
 	for method_name in suite.get_test_methods():
 		var result: String = suite.call(method_name)
 		if result != "":
